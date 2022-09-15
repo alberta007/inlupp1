@@ -2,7 +2,7 @@
 
 /**
  * @file hash_table.h
- * @author Albert Alpsten
+ * @author Albert Alpsten and Oliver Hansson
  *
  * @date 1 Sep 2022
  * @brief Simple hash table that maps integer keys to string values.

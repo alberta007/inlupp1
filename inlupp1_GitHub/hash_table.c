@@ -1,4 +1,4 @@
-
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
@@ -24,7 +24,7 @@ ioopm_hash_table_t *ioopm_hash_table_create()
   /// Allocate space for a ioopm_hash_table_t = 17 pointers to
   /// entry_t's, which will be set to NULL
   ioopm_hash_table_t *result = calloc(1, sizeof(ioopm_hash_table_t));
-  for(int i =0; i<17; i++){
+  for(int i=0; i<17; i++){
     result->buckets[i]= entry_create(0,NULL,NULL);
   }
   return result;
@@ -69,22 +69,21 @@ static entry_t find_previous_entry_for_key(entry_t *entry, int key){
   entry_t *next = entry->next;
   entry_t *current= entry;
 
-  if (k1>key){
-    return k1;
+if (k1==0){
+  return entry->next;
+}
+else{
+  while(true){
+    if (current->next->key < key){
+    current = current->next;
+    }
+    else{
+      return current->next;
+    }
   }
-
-  while((next->key)<key){
-    next = current->next;
-  }
-
-  else (next == NULL){
-    return key;
-  }
+}
 }
 
 int main () {
-
-    ioopm_hash_table_t *ht = ioopm_hash_table_create();
-    ioopm_hash_table_destroy(ht);
     return 0;
 }

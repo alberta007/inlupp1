@@ -1,8 +1,3 @@
-#include "hash_table.h"
-#include <stddef.h>
-#include <stdio.h>
-#include <stdio.h>
-#include <string.h>
 #include <CUnit/Basic.h>
 
 int init_suite(void) {
@@ -27,26 +22,6 @@ void test2(void) {
   CU_ASSERT_EQUAL(1 + 1, 2);
 }
 
-void test_create_destroy()
-{
-   ioopm_hash_table_t *ht = ioopm_hash_table_create();
-   CU_ASSERT_PTR_NOT_NULL(ht);
-   ioopm_hash_table_destroy(ht);
-}
-
-
-/*
-void test_insert_once() {
-   ioopm_hash_table_t *ht = ioopm_hash_table_create(); //Skapa ht
-   CU_ASSERT_PTR_NULL(ioopm_hash_table_lookup(ht, 1)); //Kolla om key 1 är NULL
-   ioopm_hash_table_insert(ht,1, "hej"); //Lägg till value "hej" i key 1
-   CU_ASSERT_PTR_NOT_NULL(ioopm_hash_table_lookup(ht, 1)); //TODO vad key 1 mappar till
-   ioopm_hash_table_destroy(ht); //destroy ht
-}
-*/
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 int main() {
   // First we try to set up CUnit, and exit if we fail
   if (CU_initialize_registry() != CUE_SUCCESS)
@@ -69,7 +44,6 @@ int main() {
   if (
     (CU_add_test(my_test_suite, "A simple test", test1) == NULL) ||
     (CU_add_test(my_test_suite, "Basic arithmetics", test2) == NULL) ||
-    (CU_add_test(my_test_suite, "Create and Destroy HT", test_create_destroy)==NULL)||
     0
   )
     {

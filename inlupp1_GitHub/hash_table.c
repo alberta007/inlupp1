@@ -39,8 +39,28 @@ ioopm_hash_table_t *ioopm_hash_table_create()
   return result;
 }
 
+void entry_destroy(entry_t *dummy_entry){
+  entry_t *first_entry = dummy_entry->next;
+
+  if(first_entry != NULL){
+    entry_t *current = first_entry;
+    entry_t *next_entry;
+
+    while(current != NULL){
+      next_entry = current->next;
+      free(current);
+      current = next_entry;
+    }
+  }
+  dummy_entry->next=NULL;
+}
+
 void ioopm_hash_table_destroy(ioopm_hash_table_t *ht) {
-    free(ht);
+  for(int i=0; i<17;i++){
+    entry_destroy(ht->buckets[i]);
+    free(ht->buckets[i]);
+  }
+  free(ht);
 }
 
 static entry_t *find_previous_entry_for_key(entry_t *entry, int key){

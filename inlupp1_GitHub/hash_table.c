@@ -47,21 +47,21 @@ static entry_t *find_previous_entry_for_key(entry_t *entry, int key){
   int k1 = entry->key;
   entry_t *current= entry;
 
-  if (k1==0){
+  if (k1>key){
     return entry->next;
   }
   else{
-    while(true){
-      if (current->next->key < key){
+    while (current->next !=NULL){
+      if (current->next->key < key) {
         current = current->next;
       }
-      else{
-        return current->next;
+      else {
+        return current;
       }
     }
+ return current;
   }
 }
-
 
 void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
 {
@@ -82,6 +82,9 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
     }
 }
 
+char *ioopm_hash_table_lookup(ioopm_hash_table_t *ht, int key){
+return NULL;
+}
 /*
 int main () {
     return 0;

@@ -2,8 +2,10 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
-#include "hash_table.h"
 #include <stdlib.h>
+#include "hash_table.h"
+
+#define No_Buckets 17
 
 #define Success(v)      (option_t) { .success = true, .value = v };
 #define Failure()       (option_t) { .success = false };
@@ -21,7 +23,7 @@ struct entry
 
 struct hash_table
 {
-  entry_t *buckets[17];
+  entry_t *buckets[No_Buckets];
 };
 
 
@@ -38,17 +40,17 @@ static entry_t *entry_create(int key, char *value, entry_t *next)
 
 ioopm_hash_table_t *ioopm_hash_table_create(void)
 {
-  /// Allocate space for a ioopm_hash_table_t = 17 pointers to
+  /// Allocate space for a ioopm_hash_table_t = No_Buckets pointers to
   /// entry_t's, which will be set to NULL
   ioopm_hash_table_t *result = calloc(1, sizeof(ioopm_hash_table_t));
-  for(int i=0; i<17; i++)
+  for(int i=0; i<No_Buckets; i++)
   {
     result->buckets[i]= entry_create(0,NULL,NULL);
   }
   return result;
 }
 
-void entry_destroy(entry_t *dummy_entry){
+static void entry_destroy(entry_t *dummy_entry){
   entry_t *first_entry = dummy_entry->next;
 
   if(first_entry != NULL){
@@ -65,7 +67,7 @@ void entry_destroy(entry_t *dummy_entry){
 }
 
 void ioopm_hash_table_destroy(ioopm_hash_table_t *ht) {
-  for(int i=0; i<17;i++){
+  for(int i=0; i<No_Buckets;i++){
     entry_destroy(ht->buckets[i]);
     free(ht->buckets[i]);
   }
@@ -95,7 +97,7 @@ static entry_t *find_previous_entry_for_key(entry_t *entry, int key){
 void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
 {
   /// Calculate the bucket for this entry
-  int bucket = key % 17;
+  int bucket = key % No_Buckets;
   /// Search for an existing entry for a key
   entry_t *entry = find_previous_entry_for_key(ht->buckets[bucket], key);
   entry_t *next = entry->next;
@@ -118,7 +120,7 @@ option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, int key)
   }
   else{
     /// Find the previous entry for key
-    entry_t *tmp = find_previous_entry_for_key(ht->buckets[key % 17], key);
+    entry_t *tmp = find_previous_entry_for_key(ht->buckets[key % No_Buckets], key);
     entry_t *next = tmp->next;
 
     if (next && (next->key == key))
@@ -138,7 +140,7 @@ option_t ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key){
   }
   else{
   option_t entry_exists = ioopm_hash_table_lookup(ht, key); //Check if the key exists
-  entry_t *previous = find_previous_entry_for_key(ht->buckets[key % 17], key);
+  entry_t *previous = find_previous_entry_for_key(ht->buckets[key % No_Buckets], key);
   entry_t *remove = previous->next;
 
   if (entry_exists.success) //If the entry exists then:

@@ -36,12 +36,39 @@ void test_create_destroy()
 
 void test_insert_once() {
    ioopm_hash_table_t *ht = ioopm_hash_table_create(); //Skapa ht
-   CU_ASSERT_PTR_NULL(ioopm_hash_table_lookup(ht, 1)); //Kolla om key 1 är NULL
+   CU_ASSERT_PTR_NULL(ioopm_hash_table_lookup(ht, 1).value); //Kolla om key 1 är NULL
    ioopm_hash_table_insert(ht,1, "hej"); //Lägg till value "hej" i key 1
    ioopm_hash_table_insert(ht,18,"test");
-   CU_ASSERT_PTR_NOT_NULL(ioopm_hash_table_lookup(ht, 1)); //TODO vad key 1 mappar till
+   CU_ASSERT_PTR_NOT_NULL(ioopm_hash_table_lookup(ht, 1).value);
    ioopm_hash_table_destroy(ht); //destroy ht
 }
+
+void test_lookup_empty(){
+   ioopm_hash_table_t *ht = ioopm_hash_table_create();
+   for (int i = 0; i < 18; ++i) /// 18 is a bit magical
+     {
+       CU_ASSERT_PTR_NULL(ioopm_hash_table_lookup(ht, i).value);
+       //printf("Lookup: %s \n", ioopm_hash_table_lookup(ht, i).value);
+     }
+   CU_ASSERT_PTR_NULL(ioopm_hash_table_lookup(ht, -1).value);
+   ioopm_hash_table_destroy(ht);
+}
+
+void test_remove_exsisting(){
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(); //Skapa ht
+  CU_ASSERT_PTR_NULL(ioopm_hash_table_lookup(ht, 4).value); //Kolla att 4 är null
+  ioopm_hash_table_insert(ht , 4, "Abbelito"); //inserta Abbelito på key 4
+  ioopm_hash_table_remove(ht, 4).value;
+  CU_ASSERT_PTR_NULL(ioopm_hash_table_lookup(ht, 4).value); //Kolla att 4 är null
+  ioopm_hash_table_destroy(ht);
+}
+
+
+/*
+void test_remove_nonexsisting(){
+
+}
+*/
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -69,6 +96,8 @@ int main() {
     (CU_add_test(my_test_suite, "Basic arithmetics", test2) == NULL) ||
     (CU_add_test(my_test_suite, "Create and Destroy HT", test_create_destroy)==NULL)||
     (CU_add_test(my_test_suite, "Insert once", test_insert_once)==NULL)||
+    (CU_add_test(my_test_suite, "Test lookup", test_lookup_empty)==NULL)||
+    (CU_add_test(my_test_suite, "Remove exsisting entry", test_remove_exsisting)==NULL)||
     0
   )
     {

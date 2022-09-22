@@ -5,6 +5,11 @@
 #include "hash_table.h"
 #include <stdlib.h>
 
+#define Success(v)      (option_t) { .success = true, .value = v };
+#define Failure()       (option_t) { .success = false };
+#define Successful(o)   (o.success == true)
+#define Unsuccessful(o) (o.success == false)
+
 typedef struct entry entry_t;
 
 struct entry
@@ -19,6 +24,9 @@ struct hash_table
   entry_t *buckets[17];
 };
 
+
+
+
 static entry_t *entry_create(int key, char *value, entry_t *next)
 {
   entry_t *created_entry = calloc(1, sizeof(entry_t));
@@ -28,12 +36,13 @@ static entry_t *entry_create(int key, char *value, entry_t *next)
   return created_entry;
 }
 
-ioopm_hash_table_t *ioopm_hash_table_create()
+ioopm_hash_table_t *ioopm_hash_table_create(void)
 {
   /// Allocate space for a ioopm_hash_table_t = 17 pointers to
   /// entry_t's, which will be set to NULL
   ioopm_hash_table_t *result = calloc(1, sizeof(ioopm_hash_table_t));
-  for(int i=0; i<17; i++){
+  for(int i=0; i<17; i++)
+  {
     result->buckets[i]= entry_create(0,NULL,NULL);
   }
   return result;
@@ -102,9 +111,50 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
     }
 }
 
-char *ioopm_hash_table_lookup(ioopm_hash_table_t *ht, int key){
-return NULL;
+option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, int key)
+{
+  if (key<0){
+    return Failure();
+  }
+  else{
+    /// Find the previous entry for key
+    entry_t *tmp = find_previous_entry_for_key(ht->buckets[key % 17], key);
+    entry_t *next = tmp->next;
+
+    if (next && (next->key == key))
+    {
+      return Success(next->value);
+    }
+    else
+    {
+      return Failure();
+    }
+  }
 }
+
+option_t ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key){
+  if (key<0){
+    return Failure();
+  }
+  else{
+  option_t entry_exists = ioopm_hash_table_lookup(ht, key); //Check if the key exists
+  entry_t *previous = find_previous_entry_for_key(ht->buckets[key % 17], key);
+  entry_t *remove = previous->next;
+
+  if (entry_exists.success) //If the entry exists then:
+  {
+    entry_t *after_remove = remove->next;
+    previous->next = after_remove;
+    free(remove);
+    return Success(entry_exists.value);
+  }
+  else
+  {
+    return Failure();
+  }
+}
+}
+
 /*
 int main () {
     return 0;

@@ -228,6 +228,31 @@ char **ioopm_hash_table_values(ioopm_hash_table_t *ht){
   return array;
 }
 
+bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, int key){
+  if(ioopm_hash_table_lookup(ht, key).success){
+    return true;
+  }
+  return false;
+}
+
+bool ioopm_hash_table_has_value(ioopm_hash_table_t *ht, char *value){
+  for (int k=0; k<No_Buckets; k++)
+  {
+    entry_t *dummy_entry = ht->buckets[k];
+    entry_t *next = dummy_entry->next;
+    while(next != NULL)
+    {
+      if(strcmp(next->value, value) == 0)
+      {
+        return true;
+      }
+      else{
+        next = next->next;
+      }
+    }
+  }
+  return false;
+}
 /*
 int main(void) {
 /*  ioopm_hash_table_t *ht = ioopm_hash_table_create();

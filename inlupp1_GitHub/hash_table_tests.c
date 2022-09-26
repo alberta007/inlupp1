@@ -17,16 +17,6 @@ int clean_suite(void) {
   return 0;
 }
 
-// These are example test functions. You should replace them with
-// functions of your own.
-void test1(void) {
-  CU_ASSERT(42);
-}
-
-void test2(void) {
-  CU_ASSERT_EQUAL(1 + 1, 2);
-}
-
 void test_create_destroy()
 {
    ioopm_hash_table_t *ht = ioopm_hash_table_create();
@@ -172,6 +162,33 @@ void test_hash_table_values(){
   free(arr); //destroyar arrayen
 }
 
+
+void test_has_key(){
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(); //Skapa ht
+  ioopm_hash_table_insert(ht,3,"Willywonka");
+  CU_ASSERT_FALSE(ioopm_hash_table_has_key(ht, 16));
+  CU_ASSERT_TRUE(ioopm_hash_table_has_key(ht, 3));
+  ioopm_hash_table_destroy(ht);
+}
+
+void test_has_value(){
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(); //Skapa ht
+  char *value = "Willywonka";
+  char *copy = strdup(value);
+  ioopm_hash_table_insert(ht,3, value);
+  CU_ASSERT_TRUE(ioopm_hash_table_has_value(ht,value)); //Same string (original or identity)
+  CU_ASSERT_TRUE(ioopm_hash_table_has_value(ht,copy)); //Copy of original (equivalent)
+
+  // Test empty non-existing value
+  CU_ASSERT_FALSE(ioopm_hash_table_has_value(ht, ""));
+  // Test empty existing value
+  ioopm_hash_table_insert(ht, 1, "");
+  CU_ASSERT_TRUE(ioopm_hash_table_has_value(ht, ""));
+  // Test non-existing value in non-empty ht
+  CU_ASSERT_FALSE(ioopm_hash_table_has_value(ht, "tio"));
+  free(copy);
+  ioopm_hash_table_destroy(ht);
+}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int main() {
@@ -194,18 +211,18 @@ int main() {
   // the test in question. If you want to add another test, just
   // copy a line below and change the information
   if (
-    (CU_add_test(my_test_suite, "A simple test", test1) == NULL) ||
-    (CU_add_test(my_test_suite, "Basic arithmetics", test2) == NULL) ||
     (CU_add_test(my_test_suite, "Create and Destroy HT", test_create_destroy)==NULL)||
     (CU_add_test(my_test_suite, "Insert once", test_insert_once)==NULL)||
     (CU_add_test(my_test_suite, "Test lookup", test_lookup_empty)==NULL)||
     (CU_add_test(my_test_suite, "Remove exsisting entry", test_remove_exsisting)==NULL)||
     (CU_add_test(my_test_suite, "Remove nonexsisting entry", test_remove_nonexsisting)==NULL)||
     (CU_add_test(my_test_suite, "Size of the hash_table", test_counter_one)==NULL)||
-    (CU_add_test(my_test_suite, "Is the hashtable empty?", test_is_hash_table_empty)==NULL)||
+    (CU_add_test(my_test_suite, "Test hash table empty", test_is_hash_table_empty)==NULL)||
     (CU_add_test(my_test_suite, "Test clear", test_clear_hash_table)==NULL)||
     (CU_add_test(my_test_suite, "Test keys", test_hash_table_keys)==NULL)||
     (CU_add_test(my_test_suite, "Test values", test_hash_table_values)==NULL)||
+    (CU_add_test(my_test_suite, "Test has key", test_has_key)==NULL)||
+    (CU_add_test(my_test_suite, "Test has value", test_has_value)==NULL)||
     0
   )
     {

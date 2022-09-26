@@ -115,10 +115,12 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
 
 option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, int key)
 {
+
   if (key<0){
     return Failure();
   }
   else{
+
     /// Find the previous entry for key
     entry_t *tmp = find_previous_entry_for_key(ht->buckets[key % No_Buckets], key);
     entry_t *next = tmp->next;
@@ -134,31 +136,106 @@ option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, int key)
   }
 }
 
-option_t ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key){
+option_t ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key)
+{
   if (key<0){
     return Failure();
   }
   else{
-  option_t entry_exists = ioopm_hash_table_lookup(ht, key); //Check if the key exists
-  entry_t *previous = find_previous_entry_for_key(ht->buckets[key % No_Buckets], key);
-  entry_t *remove = previous->next;
+    option_t entry_exists = ioopm_hash_table_lookup(ht, key); //Check if the key exists
+    entry_t *previous = find_previous_entry_for_key(ht->buckets[key % No_Buckets], key);
+    entry_t *remove = previous->next;
 
-  if (entry_exists.success) //If the entry exists then:
-  {
-    entry_t *after_remove = remove->next;
-    previous->next = after_remove;
-    free(remove);
-    return Success(entry_exists.value);
-  }
-  else
-  {
-    return Failure();
+    if (entry_exists.success) //If the entry exists then:
+    {
+      entry_t *after_remove = remove->next;
+      free(remove);
+      previous->next = after_remove;
+      return Success(entry_exists.value);
+    }
+    else
+    {
+      return Failure();
+    }
   }
 }
+
+int ioopm_hash_table_size(ioopm_hash_table_t *ht)
+{
+  int counter = 0;
+
+  for (int k=0; k<No_Buckets; k++)
+  {
+    entry_t *dummy_entry = ht->buckets[k];
+    entry_t *next = dummy_entry->next;
+    while(next != NULL)
+    {
+        counter++;
+        next = next->next;
+    }
+  }
+  return counter;
+}
+
+bool ioopm_hash_table_is_empty(ioopm_hash_table_t *ht)
+{
+  return ioopm_hash_table_size(ht) == 0;
+}
+
+void ioopm_hash_table_clear(ioopm_hash_table_t *ht)
+{
+  for (int k=0; k<No_Buckets; k++)
+  {
+    entry_destroy(ht->buckets[k]);
+  }
+}
+
+int *ioopm_hash_table_keys(ioopm_hash_table_t *ht){
+  int size = ioopm_hash_table_size(ht);
+  int n = 0;
+  int *array = calloc(size,sizeof(int));
+
+  for (int k=0; k<No_Buckets; k++)
+  {
+    entry_t *dummy_entry = ht->buckets[k];
+    entry_t *next = dummy_entry->next;
+    while(next != NULL)
+    {
+      array[n] = next->key;
+      n++;
+      next = next->next;
+    }
+  }
+  return array;
+}
+
+char **ioopm_hash_table_values(ioopm_hash_table_t *ht){
+  int size = ioopm_hash_table_size(ht);
+  int n = 0;
+  char **array = calloc(size,sizeof(char *));
+
+  for (int k=0; k<No_Buckets; k++)
+  {
+    entry_t *dummy_entry = ht->buckets[k];
+    entry_t *next = dummy_entry->next;
+    while(next != NULL)
+    {
+      array[n] = next->value;
+      n++;
+      next = next->next;
+    }
+  }
+  return array;
 }
 
 /*
-int main () {
+int main(void) {
+/*  ioopm_hash_table_t *ht = ioopm_hash_table_create();
+  ioopm_hash_table_insert(ht,1,"bucket 1"); //Lägg till value "bucket 1" i key 1
+  ioopm_hash_table_insert(ht,2,"bucket 2");
+  ioopm_hash_table_insert(ht,3,"bucket 3");
+  char *value = ioopm_hash_table_lookup(ht, -1).value;
+  printf("Value: %s\n", value);
     return 0;
 }
 */

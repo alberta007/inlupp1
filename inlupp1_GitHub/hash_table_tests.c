@@ -162,7 +162,6 @@ void test_hash_table_values(){
   free(arr); //destroyar arrayen
 }
 
-
 void test_has_key(){
   ioopm_hash_table_t *ht = ioopm_hash_table_create(); //Skapa ht
   ioopm_hash_table_insert(ht,3,"Willywonka");
@@ -189,6 +188,46 @@ void test_has_value(){
   free(copy);
   ioopm_hash_table_destroy(ht);
 }
+
+void test_all_function(){
+  bool less_10(int key, char *value, void *x)
+    {
+      return (key < 10);
+    }
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(); //Skapa ht
+  // Test with empty ht
+  CU_ASSERT(!ioopm_hash_table_all(ht, less_10, NULL));
+  // Test with predicate < 10, with only keys smaller than 10.
+  ioopm_hash_table_insert(ht, 1, "one");
+  ioopm_hash_table_insert(ht, 2, "two");
+  ioopm_hash_table_insert(ht, 3, "tree");
+  //ioopm_hash_table_insert(ht,-1, ptr_elem("minus ett"));
+  CU_ASSERT(ioopm_hash_table_all(ht, less_10, NULL));
+  // Test with predicate < 10, with one key larger than 10.
+  ioopm_hash_table_insert(ht, 18,"eighteen");
+  CU_ASSERT(!ioopm_hash_table_all(ht, less_10, NULL));
+  ioopm_hash_table_destroy(ht);
+}
+
+void test_any_function(){
+  bool more_10(int key, char *value, void *x)
+    {
+      return (key > 10);
+    }
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(); //Skapa ht
+  // Test with empty ht
+  CU_ASSERT_FALSE(ioopm_hash_table_any(ht, more_10 , NULL));
+  // Test with predicate < 10, with only keys smaller than 10.
+  ioopm_hash_table_insert(ht, 1, "Abbelito");
+  ioopm_hash_table_insert(ht, 2, "Ollibobbo");
+  ioopm_hash_table_insert(ht, 3, "Willywonka");
+  ioopm_hash_table_insert(ht, 3, "Mange");
+  ioopm_hash_table_insert(ht, 20, "Faffe");
+  ioopm_hash_table_insert(ht, 17, "Wallstone");
+  CU_ASSERT_TRUE(ioopm_hash_table_any(ht, more_10 , NULL));
+  ioopm_hash_table_destroy(ht);
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int main() {
@@ -223,6 +262,8 @@ int main() {
     (CU_add_test(my_test_suite, "Test values", test_hash_table_values)==NULL)||
     (CU_add_test(my_test_suite, "Test has key", test_has_key)==NULL)||
     (CU_add_test(my_test_suite, "Test has value", test_has_value)==NULL)||
+    (CU_add_test(my_test_suite, "Test the all function", test_all_function)==NULL)||
+    (CU_add_test(my_test_suite, "Test the any function", test_any_function)==NULL)||
     0
   )
     {

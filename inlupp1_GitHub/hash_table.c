@@ -6,13 +6,14 @@
 #include "hash_table.h"
 
 #define No_Buckets 17
-
 #define Success(v)      (option_t) { .success = true, .value = v };
 #define Failure()       (option_t) { .success = false };
 #define Successful(o)   (o.success == true)
 #define Unsuccessful(o) (o.success == false)
 
 typedef struct entry entry_t;
+
+
 
 struct entry
 {
@@ -253,6 +254,49 @@ bool ioopm_hash_table_has_value(ioopm_hash_table_t *ht, char *value){
   }
   return false;
 }
+
+
+bool ioopm_hash_table_all(ioopm_hash_table_t *ht, ioopm_predicate pred, void *arg){
+  bool result = true;
+
+  if (ioopm_hash_table_is_empty(ht)){
+    return false;
+  }
+
+  for(int i =0; i<No_Buckets && result; i++) //Så länge i <bucket och result==true
+  {
+    entry_t *dummy_entry = ht->buckets[i];
+    entry_t *current = dummy_entry->next;
+    while(current!= NULL && result) //Medans current inte pekar på NULL och True
+    {
+      result = pred(current->key, current->value, arg); //Updaterar result beroende på vad pred returnar
+      current = current->next;
+    }
+  }
+  return result;
+}
+
+
+bool ioopm_hash_table_any(ioopm_hash_table_t *ht, ioopm_predicate pred, void *arg){
+  bool result = false;
+
+  for(int i = 0; i<No_Buckets && !result; i++) //Så länge i <bucket och result != false
+  {
+    entry_t *dummy_entry = ht->buckets[i];
+    entry_t *current = dummy_entry->next;
+    while(current!= NULL && !result) //Medans current inte pekar på NULL och False
+    {
+      result = pred(current->key, current->value, arg); //Updaterar result beroende på vad pred returnar
+      current = current->next;
+    }
+  }
+ return result;
+}
+/*
+void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_function apply_fun, void *arg){
+
+}
+
 /*
 int main(void) {
 /*  ioopm_hash_table_t *ht = ioopm_hash_table_create();

@@ -28,7 +28,13 @@ struct hash_table
 };
 
 
-
+static int mod(int a) {
+  while(a<0)
+  {
+    a = a + 17;
+  }
+  return a;
+}
 
 static entry_t *entry_create(int key, char *value, entry_t *next)
 {
@@ -98,7 +104,7 @@ static entry_t *find_previous_entry_for_key(entry_t *entry, int key){
 void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
 {
   /// Calculate the bucket for this entry
-  int bucket = key % No_Buckets;
+  int bucket = mod(key) % No_Buckets;
   /// Search for an existing entry for a key
   entry_t *entry = find_previous_entry_for_key(ht->buckets[bucket], key);
   entry_t *next = entry->next;
@@ -121,9 +127,8 @@ option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, int key)
     return Failure();
   }
   else{
-
     /// Find the previous entry for key
-    entry_t *tmp = find_previous_entry_for_key(ht->buckets[key % No_Buckets], key);
+    entry_t *tmp = find_previous_entry_for_key(ht->buckets[mod(key) % No_Buckets], key);
     entry_t *next = tmp->next;
 
     if (next && (next->key == key))
@@ -144,7 +149,7 @@ option_t ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key)
   }
   else{
     option_t entry_exists = ioopm_hash_table_lookup(ht, key); //Check if the key exists
-    entry_t *previous = find_previous_entry_for_key(ht->buckets[key % No_Buckets], key);
+    entry_t *previous = find_previous_entry_for_key(ht->buckets[mod(key) % No_Buckets], key);
     entry_t *remove = previous->next;
 
     if (entry_exists.success) //If the entry exists then:
@@ -292,9 +297,18 @@ bool ioopm_hash_table_any(ioopm_hash_table_t *ht, ioopm_predicate pred, void *ar
   }
  return result;
 }
-/*
-void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_function apply_fun, void *arg){
 
+void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_function apply_fun, void *arg){
+  for(int i =0; i<No_Buckets; i++)
+  {
+    entry_t *dummy_entry = ht->buckets[i];
+    entry_t *current = dummy_entry->next;
+    while(current!= NULL)
+    {
+      apply_fun(current->key, &current->value, arg);
+      current = current->next;
+    }
+  }
 }
 
 /*

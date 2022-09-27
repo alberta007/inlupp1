@@ -227,7 +227,31 @@ void test_any_function(){
   CU_ASSERT_TRUE(ioopm_hash_table_any(ht, more_10 , NULL));
   ioopm_hash_table_destroy(ht);
 }
+static void apply_fun (int key, char **value, void *x)
+{
+    if (key <= 10)
+    {
+      *value = "ABBE JOBBAR";
+    }
+}
 
+void test_apply_to_all(){
+  ioopm_hash_table_t *ht = ioopm_hash_table_create();
+  ioopm_hash_table_insert(ht,0,"Abbelito");
+  ioopm_hash_table_insert(ht,1,"Ollibobbo");
+  ioopm_hash_table_insert(ht,2,"Faffe");
+  ioopm_hash_table_insert(ht,3,"Willywonka");
+  ioopm_hash_table_insert(ht,4,"Kanga");
+
+  ioopm_hash_table_apply_to_all(ht, apply_fun, NULL);
+
+    // Check that value is changed for valid key
+    CU_ASSERT_STRING_EQUAL(ioopm_hash_table_lookup(ht, 1).value, "ABBE JOBBAR");
+    // Check that value is unchanged for invalid key
+    char *value = ioopm_hash_table_lookup(ht, 18).value;
+    CU_ASSERT_NOT_EQUAL(value, "ABBE JOBBAR");
+    ioopm_hash_table_destroy(ht);
+}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int main() {
@@ -264,6 +288,7 @@ int main() {
     (CU_add_test(my_test_suite, "Test has value", test_has_value)==NULL)||
     (CU_add_test(my_test_suite, "Test the all function", test_all_function)==NULL)||
     (CU_add_test(my_test_suite, "Test the any function", test_any_function)==NULL)||
+    (CU_add_test(my_test_suite, "Test the apply function", test_apply_to_all)==NULL)||
     0
   )
     {

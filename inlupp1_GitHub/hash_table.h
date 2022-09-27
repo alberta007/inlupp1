@@ -22,7 +22,8 @@
 typedef struct hash_table ioopm_hash_table_t;
 typedef struct option option_t;
 typedef bool(*ioopm_predicate)(int key, char *value, void *extra);
-typedef bool(*ioopm_apply_function)(int key, char *value, void *extra);
+typedef void(*ioopm_apply_function)(int key, char **value, void *extra);
+
 
 
 struct option

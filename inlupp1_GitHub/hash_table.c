@@ -27,7 +27,6 @@ struct hash_table
   entry_t *buckets[No_Buckets];
 };
 
-
 static int mod(int a) {
   while(a<0)
   {
@@ -85,26 +84,44 @@ static entry_t *find_previous_entry_for_key(entry_t *entry, int key){
   int k1 = entry->key;
   entry_t *current= entry;
 
-  if (k1>key){
+  if (k1>key && key>0) //För att kunna hitta negativa värden i buckets.
+  {
     return entry->next;
   }
-  else{
-    while (current->next !=NULL){
-      if (current->next->key < key) {
+  else
+  {
+    while (current->next != NULL)
+    {
+      if (current->next->key < key)
+      {
         current = current->next;
       }
-      else {
+      else
+      {
         return current;
       }
     }
- return current;
+    return current;
   }
+}
+
+static int negative_key(int key)
+{
+  int bucket = 0;
+  if(key<0)
+  {
+    bucket = mod(key) % No_Buckets;
+  }
+  else
+  {
+    bucket = key % No_Buckets;
+  }
+  return bucket;
 }
 
 void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
 {
-  /// Calculate the bucket for this entry
-  int bucket = mod(key) % No_Buckets;
+  int bucket = negative_key(key);
   /// Search for an existing entry for a key
   entry_t *entry = find_previous_entry_for_key(ht->buckets[bucket], key);
   entry_t *next = entry->next;
@@ -122,14 +139,10 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
 
 option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, int key)
 {
-
-  if (key<0){
-    return Failure();
-  }
-  else{
-    /// Find the previous entry for key
-    entry_t *tmp = find_previous_entry_for_key(ht->buckets[mod(key) % No_Buckets], key);
-    entry_t *next = tmp->next;
+  int bucket = negative_key(key);
+  /// Find the previous entry for key
+  entry_t *tmp = find_previous_entry_for_key(ht->buckets[bucket], key);
+  entry_t *next = tmp->next;
 
     if (next && (next->key == key))
     {
@@ -140,29 +153,25 @@ option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, int key)
       return Failure();
     }
   }
-}
+//}
 
 option_t ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key)
 {
-  if (key<0){
-    return Failure();
-  }
-  else{
-    option_t entry_exists = ioopm_hash_table_lookup(ht, key); //Check if the key exists
-    entry_t *previous = find_previous_entry_for_key(ht->buckets[mod(key) % No_Buckets], key);
-    entry_t *remove = previous->next;
+  int bucket = negative_key(key);
+  option_t entry_exists = ioopm_hash_table_lookup(ht, key); //Check if the key exists
+  entry_t *previous = find_previous_entry_for_key(ht->buckets[bucket], key);
+  entry_t *remove = previous->next;
 
-    if (entry_exists.success) //If the entry exists then:
-    {
-      entry_t *after_remove = remove->next;
-      free(remove);
-      previous->next = after_remove;
-      return Success(entry_exists.value);
-    }
-    else
-    {
-      return Failure();
-    }
+  if (entry_exists.success) //If the entry exists then:
+  {
+    entry_t *after_remove = remove->next;
+    free(remove);
+    previous->next = after_remove;
+    return Success(entry_exists.value);
+  }
+  else
+  {
+    return Failure();
   }
 }
 
@@ -234,32 +243,31 @@ char **ioopm_hash_table_values(ioopm_hash_table_t *ht){
   return array;
 }
 
-bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, int key){
-  if(ioopm_hash_table_lookup(ht, key).success){
-    return true;
-  }
-  return false;
+static bool key_equiv(int key, char *value_ignored, void *arg)
+{
+  int *other_key_ptr = arg;
+  int other_key = *other_key_ptr;
+  return key == other_key;
 }
 
-bool ioopm_hash_table_has_value(ioopm_hash_table_t *ht, char *value){
-  for (int k=0; k<No_Buckets; k++)
-  {
-    entry_t *dummy_entry = ht->buckets[k];
-    entry_t *next = dummy_entry->next;
-    while(next != NULL)
-    {
-      if(strcmp(next->value, value) == 0)
-      {
-        return true;
-      }
-      else{
-        next = next->next;
-      }
-    }
-  }
-  return false;
+static bool value_equiv(int key, char *value, void *arg)
+{
+  char **other_value_ptr = arg;
+  char *other_value = *other_value_ptr;
+  return (strcmp(other_value, value)==0);
 }
 
+bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, int key)
+{
+  bool result = ioopm_hash_table_any(ht, key_equiv, &key);
+  return result;
+}
+
+bool ioopm_hash_table_has_value(ioopm_hash_table_t *ht, char *value)
+{
+  bool result = ioopm_hash_table_any(ht, value_equiv, &value);
+  return result;
+}
 
 bool ioopm_hash_table_all(ioopm_hash_table_t *ht, ioopm_predicate pred, void *arg){
   bool result = true;

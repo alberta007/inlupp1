@@ -28,8 +28,10 @@ void test_insert_once() {
    ioopm_hash_table_t *ht = ioopm_hash_table_create(); //Skapa ht
    CU_ASSERT_PTR_NULL(ioopm_hash_table_lookup(ht, 1).value); //Kolla om key 1 är NULL
    ioopm_hash_table_insert(ht,1, "hej"); //Lägg till value "hej" i key 1
-   ioopm_hash_table_insert(ht,18,"test");
+   ioopm_hash_table_insert(ht,-18,"test");
    CU_ASSERT_PTR_NOT_NULL(ioopm_hash_table_lookup(ht, 1).value);
+   //Looking up negative key:
+   CU_ASSERT_STRING_EQUAL("test", ioopm_hash_table_lookup(ht, -18).value);
    ioopm_hash_table_destroy(ht); //destroy ht
 }
 
@@ -48,15 +50,18 @@ void test_remove_exsisting(){
   ioopm_hash_table_t *ht = ioopm_hash_table_create(); //Skapa ht
   CU_ASSERT_PTR_NULL(ioopm_hash_table_lookup(ht, 4).value); //Kolla att 4 är null
   ioopm_hash_table_insert(ht , 4, "Abbelito"); //inserta Abbelito på key 4
+  ioopm_hash_table_insert(ht , -5, "Ollibobbo"); //inserta Abbelito på key 4
   ioopm_hash_table_remove(ht, 4).value;
+  ioopm_hash_table_remove(ht, -5).value;
   CU_ASSERT_PTR_NULL(ioopm_hash_table_lookup(ht, 4).value); //Kolla att 4 är null
+  CU_ASSERT_PTR_NULL(ioopm_hash_table_lookup(ht, -5).value); //Kolla att 4 är null
   ioopm_hash_table_destroy(ht);
 }
 
 void test_remove_nonexsisting(){
   ioopm_hash_table_t *ht = ioopm_hash_table_create(); //Skapa ht
   CU_ASSERT_PTR_NULL(ioopm_hash_table_lookup(ht, 4).value); //Kolla att 4 är null
-  CU_ASSERT_PTR_NULL(ioopm_hash_table_remove(ht, 4).value);
+  CU_ASSERT_PTR_NULL(ioopm_hash_table_remove(ht, -5).value);
   ioopm_hash_table_destroy(ht);
 }
 
@@ -72,8 +77,11 @@ void test_counter_one() {
    ioopm_hash_table_insert(ht,18,"bucket 1");
    ioopm_hash_table_insert(ht,35,"bucket 1");
    ioopm_hash_table_insert(ht,52,"bucket 1"); //Totalt 4 keys i bucket 1
-   //Totalt: 9 keys (utan dummys)
-   CU_ASSERT_EQUAL(ioopm_hash_table_size(ht), 9) //Compares number of keys to 9 (actuall number of keys)
+   ioopm_hash_table_insert(ht,-18,"bucket 16");
+   ioopm_hash_table_insert(ht,-35,"bucket 16");
+   ioopm_hash_table_insert(ht,-52,"bucket 16"); //Totalt 3 keys i bucket 16 (negativa)
+   //Totalt: 12 keys (utan dummys)
+   CU_ASSERT_EQUAL(ioopm_hash_table_size(ht), 12) //Compares number of keys to 9 (actuall number of keys)
    ioopm_hash_table_destroy(ht); //destroy ht
 }
 
@@ -119,7 +127,7 @@ void test_hash_table_keys(){
     else
     {
      found[i] = true;  //Sätt indexeringen till alla keys till true
-     // i[found] = true;
+     //i[found] = true;
     }
   }
 
@@ -177,6 +185,7 @@ void test_has_value(){
   ioopm_hash_table_insert(ht,3, value);
   CU_ASSERT_TRUE(ioopm_hash_table_has_value(ht,value)); //Same string (original or identity)
   CU_ASSERT_TRUE(ioopm_hash_table_has_value(ht,copy)); //Copy of original (equivalent)
+
 
   // Test empty non-existing value
   CU_ASSERT_FALSE(ioopm_hash_table_has_value(ht, ""));
@@ -242,14 +251,18 @@ void test_apply_to_all(){
   ioopm_hash_table_insert(ht,2,"Faffe");
   ioopm_hash_table_insert(ht,3,"Willywonka");
   ioopm_hash_table_insert(ht,4,"Kanga");
+  ioopm_hash_table_insert(ht,18,"Kanga");
 
   ioopm_hash_table_apply_to_all(ht, apply_fun, NULL);
 
     // Check that value is changed for valid key
     CU_ASSERT_STRING_EQUAL(ioopm_hash_table_lookup(ht, 1).value, "ABBE JOBBAR");
+    // Check that value is unchanged for valid key
+    char *value18 = ioopm_hash_table_lookup(ht, 18).value;
+    CU_ASSERT_NOT_EQUAL(value18, "ABBE JOBBAR");
     // Check that value is unchanged for invalid key
-    char *value = ioopm_hash_table_lookup(ht, 18).value;
-    CU_ASSERT_NOT_EQUAL(value, "ABBE JOBBAR");
+    char *value19 = ioopm_hash_table_lookup(ht, 19).value;
+    CU_ASSERT_NOT_EQUAL(value19, "ABBE JOBBAR");
     ioopm_hash_table_destroy(ht);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -254,7 +254,7 @@ static bool value_equiv(int key, char *value, void *arg)
 {
   char **other_value_ptr = arg;
   char *other_value = *other_value_ptr;
-  return (strcmp(other_value, value)==0);
+  return strcmp(other_value, value)==0;
 }
 
 bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, int key)

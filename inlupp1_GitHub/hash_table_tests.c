@@ -205,6 +205,7 @@ void test_all_function(){
     }
   ioopm_hash_table_t *ht = ioopm_hash_table_create(); //Skapa ht
   // Test with empty ht
+
   CU_ASSERT(!ioopm_hash_table_all(ht, less_10, NULL));
   // Test with predicate < 10, with only keys smaller than 10.
   ioopm_hash_table_insert(ht, 1, "one");
@@ -242,6 +243,9 @@ static void apply_fun (int key, char **value, void *x)
     {
       *value = "ABBE JOBBAR";
     }
+    else{
+      *value = "Olli knegar";
+    }
 }
 
 void test_apply_to_all(){
@@ -260,6 +264,8 @@ void test_apply_to_all(){
     // Check that value is unchanged for valid key
     char *value18 = ioopm_hash_table_lookup(ht, 18).value;
     CU_ASSERT_NOT_EQUAL(value18, "ABBE JOBBAR");
+    CU_ASSERT_STRING_EQUAL(ioopm_hash_table_lookup(ht, 18).value, "Olli knegar");
+
     // Check that value is unchanged for invalid key
     char *value19 = ioopm_hash_table_lookup(ht, 19).value;
     CU_ASSERT_NOT_EQUAL(value19, "ABBE JOBBAR");

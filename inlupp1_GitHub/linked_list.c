@@ -42,9 +42,9 @@ static link_t *link_create(int value, link_t *next)
 
 ioopm_list_t *ioopm_linked_list_create(void)
 {
-  ioopm_list_t *dummy_link = calloc(1, sizeof(struct list));
-  dummy_link->head = link_create(0,NULL);
-  return dummy_link;
+  ioopm_list_t *list = calloc(1, sizeof(struct list));
+  list->head = link_create(0,NULL);
+  return list;
 }
 
 static void links_destroy(link_t *dummy_link){
@@ -68,39 +68,54 @@ void ioopm_linked_list_destroy(ioopm_list_t *list)
   list->size = 0;
   links_destroy(list->head);
   free(list->head);
-  free(list->tail);
   free(list);
 }
 
 void ioopm_linked_list_prepend(ioopm_list_t *list, int value)
 {
-  if(list->head->next == NULL)  //om första linken är NULL
-  {
-    list->tail = link_create(value, list->tail);  //listans tail är nu den nya linken
-  }
   list->head->next = link_create(value, list->head->next);  //list->head == dummy
   list->size++;
+  /*
+  if(list->head->next == NULL)  //om första linken är NULL
+  {
+  //  list->head = link_create(value, NULL);  //listans tail är nu den nya linken
+  }
+  */
 }
 
 
 void ioopm_linked_list_append(ioopm_list_t *list, int value)
 {
-  link_t *dummy = list->head;
-  link_t *current = dummy->next;
-  if (current == NULL) //Om listan är tom
+  link_t *cursor = list->head->next;
+  link_t *last = link_create(value, NULL);
+  list->size++;
+  if (list->head->next == NULL) //Om listan är tom
   {
-     ioopm_linked_list_prepend(list, value); //Använd prepend
+    list->head->next = last;
+    list->tail = last;
   }
-  else
-  {
-    link_t *previous = list->tail;
-    link_t *last = link_create(value, previous->next); //Skapa en ny link med position current (alltså sist)
-    previous->next = last;  //Kopplar på last till listans tidigare tails nextpointer
-  //  list->tail = last;  //Sätter last till listans tail
-    list->size++;  //Ökar sizen med 1
-  }
+  else{
+  list->tail->next = last;
+  list->tail = last;
+ }
 }
 
+/*
+void ioopm_linked_list_insert(ioopm_list_t *list, int index, int value)
+{
+  if(index == 0){
+    ioopm_linked_list_prepend(list, value);
+  }
+  else if(list->size == 0){
+    ioopm_linked_list_append(list, value);
+  }
+  else{
+    link_t *previous = list_find_previous(list, index-1);
+    previous->next = link_create(value, previous->next);
+    list->size++;
+  }
+}
+*/
 
 static link_t *list_find_previous(ioopm_list_t *list, int index)
 {
@@ -117,15 +132,19 @@ static link_t *list_find_previous(ioopm_list_t *list, int index)
 
 void ioopm_linked_list_insert(ioopm_list_t *list, int index, int value)
 {
-  if(index == 0){
-    ioopm_linked_list_prepend(list, value);
+  link_t *previous = list_find_previous(list, index-1); //To find previous == index-1
+  if((index < 0) || (index > list->size+1)){
+    printf("Kan inte lägga till på (%d) plats i listan, listans storlek (%d)\n", index , list->size);
   }
-  else if(list->size == 0){
-    ioopm_linked_list_append(list, value);
+  else if(index ==0){
+    ioopm_linked_list_prepend(list,value);
+  }
+  else if(previous == list->tail){
+    ioopm_linked_list_append(list,value);
   }
   else{
-    link_t *previous = list_find_previous(list, index-1);
-    previous->next = link_create(value, previous->next);
+    link_t *new_link = link_create(value, previous->next);
+    previous->next = new_link;
     list->size++;
   }
 }
@@ -162,12 +181,12 @@ int ioopm_linked_list_remove(ioopm_list_t *list, int index)
 
 int ioopm_linked_list_get(ioopm_list_t *list, int index)
 {
-  assert(list->head->next);
-  link_t *current = list->head->next;
-  for (int i = 1 ; i < index; i++)
+  assert(list->head);
+  link_t *current = list->head;
+  for (int i = 0 ; i < index; i++)
   {
     current = current->next;
-  //  assert(current);
+    assert(current);
   }
   return current->value;
 }
@@ -204,18 +223,55 @@ void ioopm_linked_list_clear(ioopm_list_t *list)
   links_destroy(list->head);
   list->size=0;
 }
-/*
-bool ioopm_linked_list_all(ioopm_list_t *list, ioopm_char_predicate prop, void *extra)
+
+bool ioopm_linked_list_all(ioopm_list_t *list, ioopm_int_predicate prop, void *extra)
 {
-  NOT_SUPPORTED();
+  bool result = true;
+  int current_key = 0;
+  if(ioopm_linked_list_size(list) == 0)
+  {
+    result = false;
+    return result;
+  }
+  else
+  {
+    link_t *current = list->head->next; //first link in list
+    while(current != NULL && result)
+    {
+      current_key++;
+      result = prop(current_key, current->value, extra);
+      current = current->next;
+    }
+  }
+  return result;
 }
 
-bool ioopm_linked_list_any(ioopm_list_t *list, ioopm_char_predicate prop, void *extra)
+bool ioopm_linked_list_any(ioopm_list_t *list, ioopm_int_predicate prop, void *extra)
 {
-  NOT_SUPPORTED();
+  bool result = false;
+  int current_key = 0;
+
+  if(ioopm_linked_list_size(list) == 0)
+  {
+    return false;
+  }
+  link_t *current = list->head->next;
+  while(current != NULL && !result)
+  {
+    current_key++;
+    result = prop(current_key, current->value, extra);
+    current = current->next;
+  }
+  return result;
 }
-void ioopm_linked_apply_to_all(ioopm_list_t *list, ioopm_apply_char_function fun, void *extra)
+
+void ioopm_linked_list_apply_to_all(ioopm_list_t *list, ioopm_apply_int_function fun, void *extra)
 {
-  NOT_SUPPORTED();
+  int current_key = 0;
+  link_t *current = list->head->next;
+  while(current){
+    current_key++;
+    fun(current_key, &current->value, extra);
+    current = current->next;
+  }
 }
-*/

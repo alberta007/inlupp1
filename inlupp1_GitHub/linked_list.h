@@ -3,7 +3,7 @@
 
 typedef struct list ioopm_list_t; /// Meta: struct definition goes in C file
 typedef bool(*ioopm_int_predicate)(int key, int value, void *extra);
-typedef void(*ioopm_apply_int_function)(int key, int value, void *extra);
+typedef void(*ioopm_apply_int_function)(int key, int *value, void *extra);
 
 /// @brief Creates a new empty list
 /// @return an empty linked list

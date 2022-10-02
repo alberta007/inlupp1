@@ -5,6 +5,7 @@
 #include <string.h>
 #include <CUnit/Basic.h>
 #include "linked_list.h"
+#include "iterator.h"
 
 int init_suite(void) {
   // Change this function if you want to do something *before* you
@@ -207,6 +208,69 @@ void test_linked_list_apply_to_all(){
   ioopm_linked_list_destroy(list);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+                      /*    ITERATOR TESTINGFUNCTIONS   */
+////////////////////////////////////////////////////////////////////////////////
+
+void test_has_next_iter(){
+  ioopm_list_t *list = ioopm_linked_list_create();
+  ioopm_list_iterator_t *iter = ioopm_list_iterator(list);
+  //Check if empty list as next
+  CU_ASSERT_FALSE(ioopm_iterator_has_next(iter));
+  ioopm_linked_list_prepend(list,233);
+  ioopm_linked_list_insert(list,1,2);
+  ioopm_linked_list_append(list, 100);
+  ioopm_linked_list_append(list, 200);   // [2]->[233]->[100]->[200]
+//Check if non-empty list has next
+  ioopm_iterator_reset(iter);
+  CU_ASSERT_TRUE(ioopm_iterator_has_next(iter));
+  ioopm_iterator_destroy(iter);
+  ioopm_linked_list_destroy(list);
+}
+
+void test_next_iter(){
+  ioopm_list_t *list = ioopm_linked_list_create();
+  ioopm_list_iterator_t *iter = ioopm_list_iterator(list);
+  ioopm_linked_list_prepend(list,233);
+  ioopm_linked_list_insert(list,1,22);
+  ioopm_linked_list_append(list, 100);
+  ioopm_linked_list_append(list, 200);   // [22]->[233]->[100]->[200]
+
+  //Go through first three links in the list with the iterator next
+  ioopm_iterator_reset(iter);
+  CU_ASSERT_EQUAL(22, ioopm_iterator_next(iter));
+  CU_ASSERT_EQUAL(233, ioopm_iterator_next(iter));
+  CU_ASSERT_EQUAL(100, ioopm_iterator_next(iter));
+    //Reset the cursor to the first position, ie next should be 22.
+  ioopm_iterator_reset(iter);
+  CU_ASSERT_EQUAL(22, ioopm_iterator_next(iter));
+  ioopm_iterator_destroy(iter);
+  ioopm_linked_list_destroy(list);
+}
+
+void test_reset_current(){
+  ioopm_list_t *list = ioopm_linked_list_create();
+  ioopm_list_iterator_t *iter = ioopm_list_iterator(list);
+  ioopm_linked_list_prepend(list,-233);
+  ioopm_linked_list_insert(list,1,0);
+  ioopm_linked_list_append(list, 100);
+  ioopm_linked_list_append(list, 200);   // [0]->[-233]->[100]->[200]
+
+  ioopm_iterator_next(iter);
+  ioopm_iterator_next(iter);
+  CU_ASSERT_EQUAL(-233, ioopm_iterator_current(iter));
+  CU_ASSERT_EQUAL(-233, ioopm_iterator_current(iter));
+  CU_ASSERT_NOT_EQUAL(233, ioopm_iterator_current(iter));
+  ioopm_iterator_reset(iter);
+  CU_ASSERT_EQUAL(0, ioopm_iterator_current(iter)); //Current cursor is on dummy
+  ioopm_iterator_next(iter);
+  CU_ASSERT_EQUAL(0, ioopm_iterator_current(iter)); //The first link is 0 aswell.
+  ioopm_iterator_next(iter);
+  ioopm_iterator_next(iter);
+  CU_ASSERT_EQUAL(100, ioopm_iterator_current(iter));
+  ioopm_iterator_destroy(iter);
+  ioopm_linked_list_destroy(list);
+}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int main() {
@@ -239,6 +303,9 @@ int main() {
     (CU_add_test(my_test_suite, "All function", test_linked_list_all)==NULL)||
     (CU_add_test(my_test_suite, "Any function", test_linked_list_any)==NULL)||
     (CU_add_test(my_test_suite, "Apply to all function", test_linked_list_apply_to_all)==NULL)||
+    (CU_add_test(my_test_suite, "Test has next iterator", test_has_next_iter)==NULL)||
+    (CU_add_test(my_test_suite, "Test next iterator", test_next_iter)==NULL)||
+    (CU_add_test(my_test_suite, "Test reset iterator", test_reset_current)==NULL)||
     0
   )
     {

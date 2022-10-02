@@ -1,4 +1,5 @@
 #include "linked_list.h"
+#include "iterator.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -27,6 +28,12 @@ struct list
   link_t *head;
   link_t *tail;
   int size;
+};
+
+struct iter
+{
+  link_t *cursor;
+  ioopm_list_t *list;
 };
 
 
@@ -73,14 +80,22 @@ void ioopm_linked_list_destroy(ioopm_list_t *list)
 
 void ioopm_linked_list_prepend(ioopm_list_t *list, int value)
 {
-  list->head->next = link_create(value, list->head->next);  //list->head == dummy
-  list->size++;
-  /*
-  if(list->head->next == NULL)  //om första linken är NULL
+  if (list->head->next == NULL) //Om listan är tom
   {
-  //  list->head = link_create(value, NULL);  //listans tail är nu den nya linken
+    link_t *first = link_create(value, list->head->next);
+    list->size++;
+    list->head->next = first;
+    list->tail = first;
   }
-  */
+  else{
+    link_t *cursor = list->head->next;
+    link_t *first = link_create(value, cursor);
+    list->size++;
+    list->head->next = first;
+ }
+  /*
+  list->head->next = link_create(value, list->head->next);  //list->head == dummy
+  list->size++; */
 }
 
 
@@ -100,22 +115,6 @@ void ioopm_linked_list_append(ioopm_list_t *list, int value)
  }
 }
 
-/*
-void ioopm_linked_list_insert(ioopm_list_t *list, int index, int value)
-{
-  if(index == 0){
-    ioopm_linked_list_prepend(list, value);
-  }
-  else if(list->size == 0){
-    ioopm_linked_list_append(list, value);
-  }
-  else{
-    link_t *previous = list_find_previous(list, index-1);
-    previous->next = link_create(value, previous->next);
-    list->size++;
-  }
-}
-*/
 
 static link_t *list_find_previous(ioopm_list_t *list, int index)
 {
@@ -133,11 +132,11 @@ static link_t *list_find_previous(ioopm_list_t *list, int index)
 void ioopm_linked_list_insert(ioopm_list_t *list, int index, int value)
 {
   link_t *previous = list_find_previous(list, index-1); //To find previous == index-1
-  if((index < 0) || (index > list->size+1)){
-    printf("Kan inte lägga till på (%d) plats i listan, listans storlek (%d)\n", index , list->size);
-  }
-  else if(index ==0){
+  if(index == 1){
     ioopm_linked_list_prepend(list,value);
+  }
+  else if((index < 0) || (index > list->size+1)){
+    printf("Kan inte lägga till på (%d) plats i listan, listans storlek (%d)\n", index , list->size);
   }
   else if(previous == list->tail){
     ioopm_linked_list_append(list,value);
@@ -274,4 +273,83 @@ void ioopm_linked_list_apply_to_all(ioopm_list_t *list, ioopm_apply_int_function
     fun(current_key, &current->value, extra);
     current = current->next;
   }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+                          /*    ITERATOR FUNCTIONS   */
+////////////////////////////////////////////////////////////////////////////////
+
+ioopm_list_iterator_t *ioopm_list_iterator(ioopm_list_t *list)
+{
+  ioopm_list_iterator_t *result = calloc(1, sizeof(ioopm_list_iterator_t));
+  result->cursor = list->head;
+  result->list = list;
+  return result;
+}
+
+
+
+bool ioopm_iterator_has_next(ioopm_list_iterator_t *iter)
+{
+  if(iter->cursor != NULL)
+  {
+    if(iter->cursor->next != NULL) {
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+  else{
+    return false;
+  }
+}
+
+int ioopm_iterator_next(ioopm_list_iterator_t *iter)
+{
+  if(ioopm_iterator_has_next(iter) == true)
+  {
+    iter->cursor = iter->cursor->next;
+    return iter->cursor->value;
+  }
+  else
+  {
+    return iter->cursor->value;
+  }
+}
+
+/* ----------------------------OPTIONAL-----------------------------------------
+int ioopm_iterator_remove(ioopm_list_iterator_t *iter)
+{
+
+}
+
+ -----------------------------OPTIONAL------------------------------------------
+void ioopm_iterator_insert(ioopm_list_iterator_t *iter, int element)
+{
+
+}
+*/
+
+void ioopm_iterator_reset(ioopm_list_iterator_t *iter)
+{
+  iter->cursor = iter->list->head;
+}
+
+
+int ioopm_iterator_current(ioopm_list_iterator_t *iter)
+{
+  if(ioopm_linked_list_is_empty(iter->list) == true) //Om listan ör tom returna 0.
+  {
+    return 0;
+  }
+  else{
+    return iter->cursor->value;
+  }
+}
+
+void ioopm_iterator_destroy(ioopm_list_iterator_t *iter)
+{
+ free(iter);
 }

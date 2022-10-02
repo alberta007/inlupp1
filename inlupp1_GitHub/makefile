@@ -11,4 +11,9 @@ clear_comp: hash_table_tests.c hash_table.c
 list: linked_list.c linked_list_tests.c
 	gcc linked_list_tests.c linked_list.c -lcunit -o linked_list_tests
 	valgrind ./linked_list_tests
+
+
+list_iter: linked_list.c linked_list_tests.c iterator.h
+	gcc linked_list_tests.c linked_list.c -lcunit -o linked_list_tests
+	valgrind ./linked_list_tests
  # .PHONY: test där test inte är en riktig fil.

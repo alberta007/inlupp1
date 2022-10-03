@@ -4,6 +4,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include "hash_table.h"
+#include "linked_list.h"
+#include "iterator.h"
+#include "linked_list.c"
 
 #define No_Buckets 17
 #define Success(v)      (option_t) { .success = true, .value = v };
@@ -27,12 +30,13 @@ struct hash_table
   entry_t *buckets[No_Buckets];
 };
 
-static int mod(int a) {
-  while(a<0)
+static int mod(int key)
+{
+  while (key < 0)
   {
-    a = a + 17;
+    key = key + 17;
   }
-  return a;
+  return key;
 }
 
 static entry_t *entry_create(int key, char *value, entry_t *next)
@@ -152,8 +156,8 @@ option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, int key)
     {
       return Failure();
     }
-  }
-//}
+}
+
 
 option_t ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key)
 {
@@ -175,9 +179,9 @@ option_t ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key)
   }
 }
 
-int ioopm_hash_table_size(ioopm_hash_table_t *ht)
+size_t ioopm_hash_table_size(ioopm_hash_table_t *ht)
 {
-  int counter = 0;
+  size_t counter = 0;
 
   for (int k=0; k<No_Buckets; k++)
   {
@@ -205,6 +209,23 @@ void ioopm_hash_table_clear(ioopm_hash_table_t *ht)
   }
 }
 
+ioopm_list_t *ioopm_hash_table_keys(ioopm_hash_table_t *ht)
+{
+  ioopm_list_t *list = ioopm_linked_list_create();
+  for (int i = 0; i < No_Buckets; i++)
+  {
+    entry_t *current = ht->buckets[i]->next;
+
+    while (current != NULL)
+    {
+      ioopm_linked_list_append(list, current->key);
+      current = current->next;
+    }
+  }
+  return list;
+}
+
+/*
 int *ioopm_hash_table_keys(ioopm_hash_table_t *ht){
   int size = ioopm_hash_table_size(ht);
   int n = 0;
@@ -223,9 +244,9 @@ int *ioopm_hash_table_keys(ioopm_hash_table_t *ht){
   }
   return array;
 }
-
+*/
 char **ioopm_hash_table_values(ioopm_hash_table_t *ht){
-  int size = ioopm_hash_table_size(ht);
+  size_t size = ioopm_hash_table_size(ht);
   int n = 0;
   char **array = calloc(size,sizeof(char *));
 

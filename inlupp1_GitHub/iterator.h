@@ -1,5 +1,8 @@
 #pragma once
 #include <stdbool.h>
+#include <stddef.h>
+#include "hash_table.h"
+#include "linked_list.h"
 
 typedef struct iter ioopm_list_iterator_t;
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <stdbool.h>
+#include <stddef.h>
 
 typedef struct list ioopm_list_t; /// Meta: struct definition goes in C file
 typedef bool(*ioopm_int_predicate)(int key, int value, void *extra);
@@ -57,7 +58,7 @@ bool ioopm_linked_list_contains(ioopm_list_t *list, int element);
 /// @brief Lookup the number of elements in the linked list in O(1) time
 /// @param list the linked list
 /// @return the number of elements in the list
-int ioopm_linked_list_size(ioopm_list_t *list);
+size_t ioopm_linked_list_size(ioopm_list_t *list);
 
 /// @brief Test whether a list is empty or not
 /// @param list the linked list

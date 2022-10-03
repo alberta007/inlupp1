@@ -1,8 +1,9 @@
-#include "linked_list.h"
+#include "hash_table.h"
 #include "iterator.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <stddef.h>
 /**
 * @file linked_list.c
 * @author Elias Castegren and Oliver Hansson
@@ -204,7 +205,7 @@ bool ioopm_linked_list_contains(ioopm_list_t *list, int element)
   return false;
 }
 
-int ioopm_linked_list_size(ioopm_list_t *list)
+size_t ioopm_linked_list_size(ioopm_list_t *list)
 {
   return list->size;
 }

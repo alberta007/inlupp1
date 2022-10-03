@@ -1,4 +1,6 @@
 #include "hash_table.h"
+#include "linked_list.h"
+#include "iterator.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdio.h>
@@ -116,11 +118,12 @@ void test_hash_table_keys(){
   ioopm_hash_table_insert(ht,keys[2],"Faffe");
   ioopm_hash_table_insert(ht,keys[3],"Willywonka");
   ioopm_hash_table_insert(ht,keys[4],"Kanga");
-  int *arr = ioopm_hash_table_keys(ht);
+
+  ioopm_list_t *list = ioopm_hash_table_keys(ht);
 
   for (int i = 0; i>5; i++)
   {
-    if(!ioopm_hash_table_lookup(ht, arr[i]).success) //Finns det värden i ht som inte finns i keys[]
+    if(ioopm_linked_list_get(list, i) != keys[i]) //Finns det värden i ht som inte finns i keys[]
     {
       CU_FAIL("Found a key that was never inserted!");
     }
@@ -136,7 +139,7 @@ void test_hash_table_keys(){
     CU_ASSERT_TRUE(found[k]==true); //Testet som kollar att alla keys blivit satt till true
   }
 ioopm_hash_table_destroy(ht);
-free(arr); //destroyar arrayen
+ioopm_linked_list_destroy(list);
 }
 
 void test_hash_table_values(){

@@ -68,19 +68,14 @@ ioopm_hash_table_t *ioopm_hash_table_create(ioopm_hash_function hash, ioopm_eq_f
 
 static void entry_destroy(entry_t *dummy_entry)
 {
-  entry_t *first_entry = dummy_entry->next;
+  entry_t *current = dummy_entry->next;
+  entry_t *tmp;
 
-  if (first_entry != NULL)
+  while (current != NULL)
   {
-    entry_t *current = first_entry;
-    entry_t *next_entry;
-
-    while (current != NULL)
-    {
-      next_entry = current->next;
-      free(current);
-      current = next_entry;
-    }
+    tmp = current;
+    current = tmp->next;
+    free(tmp);
   }
   dummy_entry->next = NULL;
 }
@@ -91,6 +86,7 @@ void ioopm_hash_table_destroy(ioopm_hash_table_t *ht)
   for (int i = 0; i < No_Buckets; i++)
   {
     entry_destroy(ht->buckets[i]);
+    free(ht->buckets[i]);
   }
   free(ht);
 }
@@ -111,7 +107,7 @@ static entry_t *find_previous_entry_for_key(ioopm_hash_table_t *ht, entry_t *ent
 }
 
 
-static int negative_key(ioopm_hash_table_t *ht, elem_t key)
+static int reform_key(ioopm_hash_table_t *ht, elem_t key)
 {
   int bucket = 0;
   if(ht->hash(key) < 0)
@@ -127,7 +123,7 @@ static int negative_key(ioopm_hash_table_t *ht, elem_t key)
 
 void ioopm_hash_table_insert(ioopm_hash_table_t *ht, elem_t key, elem_t value)
 {
-  int bucket = negative_key(ht, key);
+  int bucket = reform_key(ht, key);
   /// Search for an existing entry for a key
   entry_t *entry = find_previous_entry_for_key(ht, ht->buckets[bucket], key);
   entry_t *next = entry->next;
@@ -145,7 +141,7 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, elem_t key, elem_t value)
 
 option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, elem_t key)
 {
-  int bucket = negative_key(ht, key);
+  int bucket = reform_key(ht, key);
   /// Find the previous entry for key
   entry_t *tmp = find_previous_entry_for_key(ht, ht->buckets[bucket], key);
   entry_t *next = tmp->next;
@@ -162,7 +158,7 @@ option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, elem_t key)
 
 option_t ioopm_hash_table_remove(ioopm_hash_table_t *ht, elem_t key)
 {
-  int bucket = negative_key(ht, key);
+  int bucket = reform_key(ht, key);
 
   option_t entry_exists = ioopm_hash_table_lookup(ht, key); //Check if the key exists
   entry_t *previous = find_previous_entry_for_key(ht, ht->buckets[bucket], key);

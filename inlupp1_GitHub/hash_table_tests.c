@@ -21,18 +21,7 @@ int clean_suite(void) {
   // run a test suite
   return 0;
 }
-/*
-static bool cmp_int(elem_t int1, elem_t int2)
-{
-  return ((int1.i - int2.i) == 0);
-}
 
-static bool cmp_str(elem_t str1, elem_t str2)
-{
-  return (strcmp(str1.str, str2.str) == 0);
-}
-
-*/
 ////////////////////////////////////////////////////////////////////////////////
 
 void test_create_destroy()

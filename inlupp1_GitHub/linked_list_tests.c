@@ -1,5 +1,3 @@
-
-//#include "hash_table.h"
 #include "linked_list.h"
 #include <stddef.h>
 #include <stdio.h>
@@ -9,18 +7,6 @@
 #include <CUnit/Basic.h>
 #include "iterator.h"
 #include "common.h"
-/*
-bool cmp_int(elem_t int1, elem_t int2)
-{
-  return ((int1.i - int2.i) == 0);
-}
-
-bool cmp_str(elem_t str1, elem_t str2)
-{
-  return (strcmp(str1.str, str2.str) == 0);
-}
-*/
-
 
 int init_suite(void) {
   // Change this function if you want to do something *before* you

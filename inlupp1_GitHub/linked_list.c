@@ -53,7 +53,7 @@ ioopm_list_t *ioopm_linked_list_create(ioopm_eq_function func)
 {
     ioopm_list_t *list = calloc(1, sizeof(struct list));
     list->head = link_create(int_elem(0), NULL);
-    list->func;
+    //list->func;
     return list;
 }
 
@@ -286,7 +286,6 @@ ioopm_list_iterator_t *ioopm_list_iterator(ioopm_list_t *list)
   result->list = list;
   return result;
 }
-
 
 
 bool ioopm_iterator_has_next(ioopm_list_iterator_t *iter)

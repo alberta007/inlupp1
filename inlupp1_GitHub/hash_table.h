@@ -20,7 +20,7 @@
  */
 
 typedef struct hash_table ioopm_hash_table_t;
-typedef int(*ioopm_hash_function)(elem_t elem);
+//typedef unsigned long(*ioopm_hash_function)(elem_t elem);
 typedef bool(*ioopm_eq_function)(elem_t a, elem_t b);
 
 /*

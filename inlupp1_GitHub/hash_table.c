@@ -148,7 +148,7 @@ option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, elem_t key)
 
     if (next && (ht->hash(next->key) == ht->hash(key)))
     {
-      return Success(ht->hash(next->value));
+      return Success((next->value)); // ht->hash
     }
     else
     {

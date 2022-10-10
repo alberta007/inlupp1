@@ -208,22 +208,6 @@ void test_linked_list_apply_to_all(){
 
   // Destroy list:
   ioopm_linked_list_destroy(list);
-
-/* EJ FUNGERANDE TODO???
-ioopm_list_t *str_list = ioopm_linked_list_create(cmp_str);
-ioopm_linked_list_insert(list,1,char_elem("Abbe"));
-ioopm_linked_list_insert(list,2,char_elem("Ollibobbo"));
-ioopm_linked_list_insert(list,3,char_elem("Kangas"));
-ioopm_linked_list_insert(list,4,char_elem("Faffe"));
-ioopm_linked_list_insert(list,5,char_elem("LUUDI"));
-ioopm_linked_list_apply_to_all(str_list, change_small_keys, NULL);
-CU_ASSERT_EQUAL("KINGS", ioopm_linked_list_get(list, 1).c);
-CU_ASSERT_EQUAL("KINGS", ioopm_linked_list_get(list, 2).c);
-CU_ASSERT_EQUAL("KINGS", ioopm_linked_list_get(list, 3).c);
-CU_ASSERT_EQUAL("KINGS", ioopm_linked_list_get(list, 4).c);
-CU_ASSERT_EQUAL("KINGS", ioopm_linked_list_get(list, 5).c);
-  ioopm_linked_list_destroy(str_list);
-  */
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -253,8 +237,7 @@ void test_next_iter(){
   ioopm_linked_list_insert(list,1,int_elem(2));
   ioopm_linked_list_append(list, int_elem(100));
   ioopm_linked_list_append(list, int_elem(200));   // [2]->[233]->[100]->[200]
-
-  //Go through first three links in the list with the iterator next
+    //Go through first three links in the list with the iterator next
   ioopm_iterator_reset(iter);
   CU_ASSERT_EQUAL(2, ioopm_iterator_next(iter).i);
   CU_ASSERT_EQUAL(233, ioopm_iterator_next(iter).i);

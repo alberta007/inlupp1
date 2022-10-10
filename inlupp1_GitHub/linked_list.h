@@ -1,8 +1,6 @@
 #pragma once
 #include <stdbool.h>
 #include <stddef.h>
-//#include "hash_table.h"
-//#include "iterator.h"
 #include "common.h"
 
 typedef struct list ioopm_list_t; /// Meta: struct definition goes in C file

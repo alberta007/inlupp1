@@ -206,20 +206,19 @@ void test_has_value(){
 
 //  TESTET FUNKAR MEN KLAGAR PÅ string_knr_hash
 void test_has_value_string_key(){
-ioopm_hash_table_t *ht = ioopm_hash_table_create((ioopm_hash_function)string_knr_hash, cmp_str); //Skapa ht
-ioopm_hash_table_insert(ht, str_elem("ett"), str_elem("Willywonka"));
-CU_ASSERT_TRUE(ioopm_hash_table_has_value(ht, str_elem("Willywonka"))); //Same string (original or identity)
+  ioopm_hash_table_t *ht = ioopm_hash_table_create((ioopm_hash_function)string_knr_hash, cmp_str); //Skapa ht
+  ioopm_hash_table_insert(ht, str_elem("ett"), str_elem("Willywonka"));
+  CU_ASSERT_TRUE(ioopm_hash_table_has_value(ht, str_elem("Willywonka"))); //Same string (original or identity)
 
-// Test empty non-existing value
-CU_ASSERT_FALSE(ioopm_hash_table_has_value(ht, str_elem("")));
-// Test empty existing value
-ioopm_hash_table_insert(ht, str_elem("två"), str_elem("två"));
-CU_ASSERT_TRUE(ioopm_hash_table_has_value(ht, str_elem("två")));
-// Test non-existing value in non-empty ht
-CU_ASSERT_FALSE(ioopm_hash_table_has_value(ht, str_elem("tio")));
-ioopm_hash_table_destroy(ht);
+  // Test empty non-existing value
+  CU_ASSERT_FALSE(ioopm_hash_table_has_value(ht, str_elem("")));
+  // Test empty existing value
+  ioopm_hash_table_insert(ht, str_elem("två"), str_elem("två"));
+  CU_ASSERT_TRUE(ioopm_hash_table_has_value(ht, str_elem("två")));
+  // Test non-existing value in non-empty ht
+  CU_ASSERT_FALSE(ioopm_hash_table_has_value(ht, str_elem("tio")));
+  ioopm_hash_table_destroy(ht);
 }
-//*/
 
 void test_all_function(){
   bool less_100(elem_t key, elem_t value, void *x)

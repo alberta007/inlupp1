@@ -3,31 +3,31 @@ Flat profile:
 Each sample counts as 0.01 seconds.
   %   cumulative   self              self     total           
  time   seconds   seconds    calls  ms/call  ms/call  name    
- 66.78      0.02     0.02  2213116     0.00     0.00  string_knr_hash
- 33.39      0.03     0.01    10000     0.00     0.00  ioopm_hash_table_any
-  0.00      0.03     0.00    20000     0.00     0.00  find_previous_entry_for_key
-  0.00      0.03     0.00    20000     0.00     0.00  reform_key
-  0.00      0.03     0.00    10000     0.00     0.00  ioopm_hash_table_has_key
-  0.00      0.03     0.00    10000     0.00     0.00  ioopm_hash_table_insert
-  0.00      0.03     0.00    10000     0.00     0.00  ioopm_hash_table_lookup
-  0.00      0.03     0.00    10000     0.00     0.00  process_word
-  0.00      0.03     0.00      216     0.00     0.00  entry_create
-  0.00      0.03     0.00      200     0.00     0.00  link_create
-  0.00      0.03     0.00      199     0.00     0.00  ioopm_iterator_has_next
-  0.00      0.03     0.00      199     0.00     0.00  ioopm_iterator_next
-  0.00      0.03     0.00      199     0.00     0.00  ioopm_linked_list_append
-  0.00      0.03     0.00       17     0.00     0.00  entry_destroy
-  0.00      0.03     0.00        1     0.00     0.00  ioopm_hash_table_create
-  0.00      0.03     0.00        1     0.00     0.00  ioopm_hash_table_destroy
-  0.00      0.03     0.00        1     0.00     0.00  ioopm_hash_table_keys
-  0.00      0.03     0.00        1     0.00     0.00  ioopm_hash_table_size
-  0.00      0.03     0.00        1     0.00     0.00  ioopm_iterator_destroy
-  0.00      0.03     0.00        1     0.00     0.00  ioopm_linked_list_create
-  0.00      0.03     0.00        1     0.00     0.00  ioopm_linked_list_destroy
-  0.00      0.03     0.00        1     0.00     0.00  ioopm_list_iterator
-  0.00      0.03     0.00        1     0.00     0.00  links_destroy
-  0.00      0.03     0.00        1     0.00    30.02  process_file
-  0.00      0.03     0.00        1     0.00     0.00  sort_keys
+100.16      0.01     0.01  2213116     0.00     0.00  string_knr_hash
+  0.00      0.01     0.00    20000     0.00     0.00  find_previous_entry_for_key
+  0.00      0.01     0.00    20000     0.00     0.00  reform_key
+  0.00      0.01     0.00    10000     0.00     0.00  ioopm_hash_table_any
+  0.00      0.01     0.00    10000     0.00     0.00  ioopm_hash_table_has_key
+  0.00      0.01     0.00    10000     0.00     0.00  ioopm_hash_table_insert
+  0.00      0.01     0.00    10000     0.00     0.00  ioopm_hash_table_lookup
+  0.00      0.01     0.00    10000     0.00     0.00  process_word
+  0.00      0.01     0.00      216     0.00     0.00  entry_create
+  0.00      0.01     0.00      200     0.00     0.00  link_create
+  0.00      0.01     0.00      199     0.00     0.00  ioopm_iterator_has_next
+  0.00      0.01     0.00      199     0.00     0.00  ioopm_iterator_next
+  0.00      0.01     0.00      199     0.00     0.00  ioopm_linked_list_append
+  0.00      0.01     0.00       17     0.00     0.00  entry_destroy
+  0.00      0.01     0.00        1     0.00     0.00  ioopm_hash_table_create
+  0.00      0.01     0.00        1     0.00     0.00  ioopm_hash_table_destroy
+  0.00      0.01     0.00        1     0.00     0.00  ioopm_hash_table_keys
+  0.00      0.01     0.00        1     0.00     0.00  ioopm_hash_table_size
+  0.00      0.01     0.00        1     0.00     0.00  ioopm_iterator_destroy
+  0.00      0.01     0.00        1     0.00     0.00  ioopm_linked_list_create
+  0.00      0.01     0.00        1     0.00     0.00  ioopm_linked_list_destroy
+  0.00      0.01     0.00        1     0.00     0.00  ioopm_list_iterator
+  0.00      0.01     0.00        1     0.00     0.00  links_destroy
+  0.00      0.01     0.00        1     0.00    10.00  process_file
+  0.00      0.01     0.00        1     0.00     0.00  sort_keys
 
  %         the percentage of the total running time of the
 time       program used by this function.
@@ -65,12 +65,12 @@ notice and this notice are preserved.
 		     Call graph (explanation follows)
 
 
-granularity: each sample hit covers 2 byte(s) for 33.28% of 0.03 seconds
+granularity: each sample hit covers 2 byte(s) for 99.84% of 0.01 seconds
 
 index % time    self  children    called     name
                                                  <spontaneous>
-[1]    100.0    0.00    0.03                 main [1]
-                0.00    0.03       1/1           process_file [3]
+[1]    100.0    0.00    0.01                 main [1]
+                0.00    0.01       1/1           process_file [4]
                 0.00    0.00     199/10000       ioopm_hash_table_lookup [8]
                 0.00    0.00     199/199         ioopm_iterator_next [14]
                 0.00    0.00       1/1           ioopm_hash_table_create [17]
@@ -82,56 +82,56 @@ index % time    self  children    called     name
                 0.00    0.00       1/1           ioopm_linked_list_destroy [23]
                 0.00    0.00       1/1           ioopm_hash_table_destroy [18]
 -----------------------------------------------
-                0.00    0.03   10000/10000       process_file [3]
-[2]     99.9    0.00    0.03   10000         process_word [2]
-                0.00    0.03   10000/10000       ioopm_hash_table_has_key [5]
-                0.00    0.00   10000/10000       ioopm_hash_table_insert [9]
-                0.00    0.00    9801/10000       ioopm_hash_table_lookup [8]
------------------------------------------------
-                0.00    0.03       1/1           main [1]
-[3]     99.9    0.00    0.03       1         process_file [3]
-                0.00    0.03   10000/10000       process_word [2]
------------------------------------------------
-                              949167             ioopm_hash_table_any [4]
-                0.01    0.02   10000/10000       ioopm_hash_table_has_key [5]
-[4]     90.5    0.01    0.02   10000+949167  ioopm_hash_table_any [4]
-                0.02    0.00 1898334/2213116     string_knr_hash [6]
-                              949167             ioopm_hash_table_any [4]
------------------------------------------------
-                0.00    0.03   10000/10000       process_word [2]
-[5]     90.5    0.00    0.03   10000         ioopm_hash_table_has_key [5]
-                0.01    0.02   10000/10000       ioopm_hash_table_any [4]
------------------------------------------------
                 0.00    0.00   19886/2213116     ioopm_hash_table_insert [9]
                 0.00    0.00   20000/2213116     ioopm_hash_table_lookup [8]
                 0.00    0.00   40000/2213116     reform_key [10]
                 0.00    0.00  234896/2213116     find_previous_entry_for_key [7]
-                0.02    0.00 1898334/2213116     ioopm_hash_table_any [4]
-[6]     66.7    0.02    0.00 2213116         string_knr_hash [6]
+                0.01    0.00 1898334/2213116     ioopm_hash_table_any [5]
+[2]    100.0    0.01    0.00 2213116         string_knr_hash [2]
+-----------------------------------------------
+                0.00    0.01   10000/10000       process_file [4]
+[3]     99.9    0.00    0.01   10000         process_word [3]
+                0.00    0.01   10000/10000       ioopm_hash_table_has_key [6]
+                0.00    0.00   10000/10000       ioopm_hash_table_insert [9]
+                0.00    0.00    9801/10000       ioopm_hash_table_lookup [8]
+-----------------------------------------------
+                0.00    0.01       1/1           main [1]
+[4]     99.9    0.00    0.01       1         process_file [4]
+                0.00    0.01   10000/10000       process_word [3]
+-----------------------------------------------
+                              949167             ioopm_hash_table_any [5]
+                0.00    0.01   10000/10000       ioopm_hash_table_has_key [6]
+[5]     85.8    0.00    0.01   10000+949167  ioopm_hash_table_any [5]
+                0.01    0.00 1898334/2213116     string_knr_hash [2]
+                              949167             ioopm_hash_table_any [5]
+-----------------------------------------------
+                0.00    0.01   10000/10000       process_word [3]
+[6]     85.8    0.00    0.01   10000         ioopm_hash_table_has_key [6]
+                0.00    0.01   10000/10000       ioopm_hash_table_any [5]
 -----------------------------------------------
                 0.00    0.00   10000/20000       ioopm_hash_table_insert [9]
                 0.00    0.00   10000/20000       ioopm_hash_table_lookup [8]
-[7]      7.1    0.00    0.00   20000         find_previous_entry_for_key [7]
-                0.00    0.00  234896/2213116     string_knr_hash [6]
+[7]     10.6    0.00    0.00   20000         find_previous_entry_for_key [7]
+                0.00    0.00  234896/2213116     string_knr_hash [2]
 -----------------------------------------------
                 0.00    0.00     199/10000       main [1]
-                0.00    0.00    9801/10000       process_word [2]
-[8]      4.7    0.00    0.00   10000         ioopm_hash_table_lookup [8]
+                0.00    0.00    9801/10000       process_word [3]
+[8]      7.1    0.00    0.00   10000         ioopm_hash_table_lookup [8]
                 0.00    0.00   10000/20000       find_previous_entry_for_key [7]
-                0.00    0.00   20000/2213116     string_knr_hash [6]
+                0.00    0.00   20000/2213116     string_knr_hash [2]
                 0.00    0.00   10000/20000       reform_key [10]
 -----------------------------------------------
-                0.00    0.00   10000/10000       process_word [2]
-[9]      4.7    0.00    0.00   10000         ioopm_hash_table_insert [9]
+                0.00    0.00   10000/10000       process_word [3]
+[9]      7.1    0.00    0.00   10000         ioopm_hash_table_insert [9]
                 0.00    0.00   10000/20000       find_previous_entry_for_key [7]
                 0.00    0.00   10000/20000       reform_key [10]
-                0.00    0.00   19886/2213116     string_knr_hash [6]
+                0.00    0.00   19886/2213116     string_knr_hash [2]
                 0.00    0.00     199/216         entry_create [11]
 -----------------------------------------------
                 0.00    0.00   10000/20000       ioopm_hash_table_insert [9]
                 0.00    0.00   10000/20000       ioopm_hash_table_lookup [8]
-[10]     1.2    0.00    0.00   20000         reform_key [10]
-                0.00    0.00   40000/2213116     string_knr_hash [6]
+[10]     1.8    0.00    0.00   20000         reform_key [10]
+                0.00    0.00   40000/2213116     string_knr_hash [2]
 -----------------------------------------------
                 0.00    0.00      17/216         ioopm_hash_table_create [17]
                 0.00    0.00     199/216         ioopm_hash_table_insert [9]
@@ -284,10 +284,10 @@ Index by function name
 
   [11] entry_create            [8] ioopm_hash_table_lookup [12] link_create
   [16] entry_destroy          [20] ioopm_hash_table_size  [25] links_destroy
-   [7] find_previous_entry_for_key [21] ioopm_iterator_destroy [3] process_file
-   [4] ioopm_hash_table_any   [13] ioopm_iterator_has_next [2] process_word
+   [7] find_previous_entry_for_key [21] ioopm_iterator_destroy [4] process_file
+   [5] ioopm_hash_table_any   [13] ioopm_iterator_has_next [3] process_word
   [17] ioopm_hash_table_create [14] ioopm_iterator_next   [10] reform_key
   [18] ioopm_hash_table_destroy [15] ioopm_linked_list_append [26] sort_keys
-   [5] ioopm_hash_table_has_key [22] ioopm_linked_list_create [6] string_knr_hash
+   [6] ioopm_hash_table_has_key [22] ioopm_linked_list_create [2] string_knr_hash
    [9] ioopm_hash_table_insert [23] ioopm_linked_list_destroy
   [19] ioopm_hash_table_keys  [24] ioopm_list_iterator

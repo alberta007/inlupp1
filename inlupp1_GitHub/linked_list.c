@@ -52,6 +52,7 @@ ioopm_list_t *ioopm_linked_list_create(ioopm_eq_function func)
 {
   ioopm_list_t *list = calloc(1, sizeof(struct list));
   list->head = link_create(int_elem(0), NULL);
+  list->tail = NULL;
   return list;
 }
 

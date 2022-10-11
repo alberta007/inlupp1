@@ -43,13 +43,13 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, elem_t key, elem_t value);
 /// @brief lookup value for key in hash table ht
 /// @param ht hash table operated upon
 /// @param key key to lookup
-/// @return the value mapped to by key (FIXME: incomplete)
+/// @return an option_t, with a bool and the value mapped to by key
 option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, elem_t key);
 
 /// @brief remove any mapping from key to a value
 /// @param ht hash table operated upon
 /// @param key key to remove
-/// @return the value mapped to by key (FIXME: incomplete)
+/// @return an option_t, with a bool and the value mapped to by key 
 option_t ioopm_hash_table_remove(ioopm_hash_table_t *ht, elem_t key);
 
 //////////////////////////////////////////////////////////////////////////////// TICKET #2

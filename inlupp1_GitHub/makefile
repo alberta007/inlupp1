@@ -13,19 +13,19 @@ list: linked_list.c linked_list_tests.c common.c
 	gcc linked_list_tests.c linked_list.c common.c -lcunit -o linked_list_tests
 	valgrind ./linked_list_tests
 
-freq_comp_small: freq-count.c hash_table.c linked_list.c common.c small.txt
+test_small: freq-count.c hash_table.c linked_list.c common.c small.txt
 	gcc -pedantic -g freq-count.c hash_table.c linked_list.c common.c -o freq_count
 	valgrind ./freq_count small.txt
 
-freq_comp1k: freq-count.c hash_table.c linked_list.c common.c 1k-long-words.txt
+test1k: freq-count.c hash_table.c linked_list.c common.c 1k-long-words.txt
 	gcc -pedantic -g freq-count.c hash_table.c linked_list.c common.c -o freq_count
 	valgrind ./freq_count 1k-long-words.txt
 
-freq_comp10k: freq-count.c hash_table.c linked_list.c common.c 10k-words.txt
+test10k: freq-count.c hash_table.c linked_list.c common.c 10k-words.txt
 	gcc -pedantic -g freq-count.c hash_table.c linked_list.c common.c -o freq_count
 	valgrind ./freq_count 10k-words.txt
 
-freq_comp16k: freq-count.c hash_table.c linked_list.c common.c 16k-words.txt
+test16k: freq-count.c hash_table.c linked_list.c common.c 16k-words.txt
 	gcc -pedantic -g freq-count.c hash_table.c linked_list.c common.c -o freq
 	valgrind ./freq 16k-words.txt
 
